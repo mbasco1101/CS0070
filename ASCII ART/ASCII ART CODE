@@ -1,0 +1,266 @@
+section .data
+
+    title db "ASCII ART BASCO", 10
+    titleLen equ $ - title
+;;top
+    top1 db "                         _____________", 10
+    top1Len equ $ - top1
+
+    top2 db "                       /===============\", 10
+    top2Len equ $ - top2
+
+    top3 db "                    /===================\", 10
+    top3Len equ $ - top3
+
+    top4 db "                  /=======================\", 10
+    top4Len equ $ - top4
+
+    top5 db "                 |=========================|", 10
+    top5Len equ $ - top5
+
+    top6 db "                |==|########|=====|########|=|", 10
+    top6Len equ $ - top6
+
+    top7 db "                |==|########|=====|########|==|", 10
+    top7Len equ $ - top7
+
+    top8 db "                |==|########|==###|########|==|", 10
+    top8Len equ $ - top8
+
+    top9 db "                |==|########|==###|########|==|", 10
+    top9Len equ $ - top9
+
+    top10 db "                |==|----####|==###|####----|==|", 10
+    top10Len equ $ - top10
+
+    top11 db "                |==|----####|==###|####----|==|", 10
+    top11Len equ $ - top11
+
+    top12 db "                |==|########|=====|########|==|", 10
+    top12Len equ $ - top12
+
+    top13 db "                |==|########|=====|########|==|", 10
+    top13Len equ $ - top13
+
+    top14 db "                 \===========================/", 10
+    top14Len equ $ - top14
+
+    top15 db "                   \=======================/", 10
+    top15Len equ $ - top15
+
+;mid
+    middle1 db "        .-===============================================-.", 10
+    middle1Len equ $ - middle1
+
+    middle2 db "      /==|########|==|###///###|==|###\\\###|==|########|==\", 10
+    middle2Len equ $ - middle2
+
+    middle3 db "     |===|########|==|#///#####|==|####\\\#|==|########|===|", 10
+    middle3Len equ $ - middle3
+
+    middle4 db "    /====|########|==|///######|==|#####\\\|==|########|====\", 10
+    middle4Len equ $ - middle4
+
+    middle5 db "   |=====|#########|///|#######|==|#######|\\\|########|=====|", 10
+    middle5Len equ $ - middle5
+
+    middle6 db "   |=====|#########|\\\|######|==|########|///|#######|=====|", 10
+    middle6Len equ $ - middle6
+
+    middle7 db "   |=====|#########|==|\\\#####|==|#####///|==|########|=====|", 10
+    middle7Len equ $ - middle7
+
+    middle8 db "    \====|#########|==|#\\\####|==|####///#|==|########|====/", 10
+    middle8Len equ $ - middle8
+
+    middle9 db "      \==|#########|==|##\\\###|==|###///##|==|########|==/", 10
+    middle9Len equ $ - middle9
+
+    middle10 db "       '-----------------------------------------------'", 10
+    middle10Len equ $ - middle10
+
+
+;bot
+    lower1 db "                 |===============================|", 10
+    lower1Len equ $ - lower1
+
+    lower2 db "                 |=====|     |=========|     |=====|", 10
+    lower2Len equ $ - lower2
+
+    lower3 db "                /======|     |=========|     |======\", 10
+    lower3Len equ $ - lower3
+
+    lower4 db "               |=======|     |=========|     |=======|", 10
+    lower4Len equ $ - lower4
+
+    lower5 db "              /========|_____|=========|_____|========\", 10
+    lower5Len equ $ - lower5
+
+    lower6 db "             |=========================================|", 10
+    lower6Len equ $ - lower6
+
+
+    newline db 10
+    spaceChar db " "
+    hashChar db "#"
+
+section .text
+
+    global _start
+
+_start:
+    mov ecx, title
+    mov edx, titleLen
+    call printString
+
+
+;top
+    mov ecx, top1
+    mov edx, top1Len
+    call printString
+
+    mov ecx, top2
+    mov edx, top2Len
+    call printString
+
+    mov ecx, top3
+    mov edx, top3Len
+    call printString
+
+    mov ecx, top4
+    mov edx, top4Len
+    call printString
+
+    mov ecx, top5
+    mov edx, top5Len
+    call printString
+
+    mov ecx, top6
+    mov edx, top6Len
+    call printString
+
+    mov ecx, top7
+    mov edx, top7Len
+    call printString
+
+    mov ecx, top8
+    mov edx, top8Len
+    call printString
+
+    mov ecx, top9
+    mov edx, top9Len
+    call printString
+
+    mov ecx, top10
+    mov edx, top10Len
+    call printString
+
+    mov ecx, top11
+    mov edx, top11Len
+    call printString
+
+    mov ecx, top12
+    mov edx, top12Len
+    call printString
+
+    mov ecx, top13
+    mov edx, top13Len
+    call printString
+
+    mov ecx, top14
+    mov edx, top14Len
+    call printString
+
+    mov ecx, top15
+    mov edx, top15Len
+    call printString
+
+;mid
+    mov ecx, middle1
+    mov edx, middle1Len
+    call printString
+
+    mov ecx, middle2
+    mov edx, middle2Len
+    call printString
+
+    mov ecx, middle3
+    mov edx, middle3Len
+    call printString
+
+    mov ecx, middle4
+    mov edx, middle4Len
+    call printString
+
+    mov ecx, middle5
+    mov edx, middle5Len
+    call printString
+
+    mov ecx, middle6
+    mov edx, middle6Len
+    call printString
+
+    mov ecx, middle7
+    mov edx, middle7Len
+    call printString
+
+    mov ecx, middle8
+    mov edx, middle8Len
+    call printString
+
+    mov ecx, middle9
+    mov edx, middle9Len
+    call printString
+
+    mov ecx, middle10
+    mov edx, middle10Len
+    call printString
+
+;bot
+    mov ecx, lower1
+    mov edx, lower1Len
+    call printString
+
+    mov ecx, lower2
+    mov edx, lower2Len
+    call printString
+
+    mov ecx, lower3
+    mov edx, lower3Len
+    call printString
+
+    mov ecx, lower4
+    mov edx, lower4Len
+    call printString
+
+    mov ecx, lower5
+    mov edx, lower5Len
+    call printString
+
+    mov ecx, lower6
+    mov edx, lower6Len
+    call printString
+
+    mov esi, 2
+
+newlineLoop:
+    mov ecx, newline
+    mov edx, 1
+    call printString
+
+    dec esi
+    jnz newlineLoop
+
+;Exit
+    mov eax, 1              
+    mov ebx, 0              
+    int 0x80
+
+; printString
+printString:
+
+    mov eax, 4              
+    mov ebx, 1              
+    int 0x80
+
+ret
