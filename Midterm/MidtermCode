@@ -1,0 +1,216 @@
+; about_me.asm
+; ASCII BASCO_MIDTERM
+section .data
+    topBorder db "+------------------------------------------------------------------------------+", 10
+    topBorderLen equ $ - topBorder
+    title db "|+=================================== ABOUT ME ==============================+ |", 10
+    titleLen equ $ - title
+    iconLine1 db "|        .--------.                                                            |", 10
+    iconLine1Len equ $ - iconLine1
+    iconLine2 db "|       / [==][==] \       First name:    Miguel                               |", 10
+    iconLine2Len equ $ - iconLine2
+    iconLine3 db "|      |      U     |      Last name:     Basco                                |", 10
+    iconLine3Len equ $ - iconLine3
+    iconLine4 db "|       \    \__/  /       Nickname:      Migs                                 |", 10
+    iconLine4Len equ $ - iconLine4
+    nameLine db "|                          Email:         mcbasco@fit.edu.ph                   |", 10
+    nameLineLen equ $ - nameLine
+    emailLine db "|                                                                              |", 10
+    emailLineLen equ $ - emailLine
+    faceLine db "|    First big achievement:    Finishing A Half Marathon                       |", 10
+    faceLineLen equ $ - faceLine
+    firstLine db "|    First risk I ever took:   Taking Computer Science                         |", 10
+    firstLineLen equ $ - firstLine
+    sectionLine db "|    ----------------------------------------------------------------------    |", 10
+    sectionLineLen equ $ - sectionLine
+    happyLine db "|    First time I felt completely happy:  Learning How to Ride a Bike.         |", 10
+    happyLineLen equ $ - happyLine
+    myFaves db "|    +============================  MY FAVES  ============================+    |", 10
+    myFavesLen equ $ - myFaves
+    colorLine db "|    Color: Blue                           Food: Chicken                       |", 10
+    colorLineLen equ $ - colorLine
+    musicLine db "|    Music: Pop Rap                                                            |", 10
+    musicLineLen equ $ - musicLine
+    songLine db "|    Song: NF-Happy                                                            |", 10
+    songLineLen equ $ - songLine
+    hobbyTitle db "|    +============================ HOBBIES ============================+       |", 10
+    hobbyTitleLen equ $ - hobbyTitle
+    hobbyLine db "|    Weekend activity:    Playing Computer Games, Watching Netflix,            |", 10
+    hobbyLineLen equ $ - hobbyLine
+    hobbyLine2 db "|                         Running/Jogging.                                     |", 10
+    hobbyLine2Len equ $ - hobbyLine2
+    favorites db "|        TV Show:     Greys Anatomy                                            |", 10
+               db "|        Movie:       Interstellar                                             |", 10
+               db "|        Book:        The Only One Left by Riley Sager                         |", 10
+               db "|        Celeb:       Robert Downey Jr.                                        |", 10
+    favoritesLen equ $ - favorites
+    ambition db "|    +============================ AMBITION ============================+      |", 10
+    ambitionLen equ $ - ambition
+    ambitionLine db "|    My ambition is to become a computer game developer.                       |", 10
+                 db "|    I want to create fun and exciting games that people will enjoy.           |", 10
+    ambitionLineLen equ $ - ambitionLine
+    motto db "|       ,.                 .--------------------.                   ______     |", 10
+          db "|    __.'_                / ONE STEP AT A TIME!! \                 |[___] |    |", 10
+          db "|   |__|__|               '----------------------'                 |+   ; |    |", 10
+          db "|   |     |                                                        `------'    |", 10
+          db "|   |-___-|                                                                    |", 10
+          db "|   '.___.'                                                                    |", 10
+    mottoLen equ $ - motto
+    bottomBorder db "+------------------------------------------------------------------------------+", 10
+    bottomBorderLen equ $ - bottomBorder
+    newline db 10
+    star db "*"
+
+section .text
+
+    global _start
+print_string:
+    mov eax, 4              
+    mov ebx, 1              
+    int 0x80
+    ret
+
+print_border:
+    mov ecx, 70             ; loop counter
+
+.border_loop:
+    push ecx                ; preserve counter
+
+    mov eax, 4              ; sys_write
+    mov ebx, 1              ; standard output
+    mov ecx, star            ; character to print
+    mov edx, 1              ; print one character
+    int 0x80
+
+    pop ecx                 ; restore counter
+    loop .border_loop       ; repeat until ECX becomes zero
+
+    mov ecx, newline
+    mov edx, 1
+    call print_string
+    ret
+
+
+_start:
+    ;top border
+    mov ecx, topBorder
+    mov edx, topBorderLen
+    call print_string
+
+    ;title
+    mov ecx, title
+    mov edx, titleLen
+    call print_string
+
+    ;emoji
+    mov ecx, iconLine1
+    mov edx, iconLine1Len
+    call print_string
+
+    mov ecx, iconLine2
+    mov edx, iconLine2Len
+    call print_string
+
+    mov ecx, iconLine3
+    mov edx, iconLine3Len
+    call print_string
+
+    mov ecx, iconLine4
+    mov edx, iconLine4Len
+    call print_string
+
+    ;information
+    mov ecx, nameLine
+    mov edx, nameLineLen
+    call print_string
+
+    mov ecx, emailLine
+    mov edx, emailLineLen
+    call print_string
+
+    mov ecx, faceLine
+    mov edx, faceLineLen
+    call print_string
+
+    mov ecx, firstLine
+    mov edx, firstLineLen
+    call print_string
+
+    mov ecx, sectionLine
+    mov edx, sectionLineLen
+    call print_string
+
+    mov ecx, happyLine
+    mov edx, happyLineLen
+    call print_string
+
+    mov ecx, sectionLine
+    mov edx, sectionLineLen
+    call print_string
+
+    ;favorites
+    mov ecx, myFaves
+    mov edx, myFavesLen
+    call print_string
+
+    mov ecx, colorLine
+    mov edx, colorLineLen
+    call print_string
+
+    mov ecx, musicLine
+    mov edx, musicLineLen
+    call print_string
+
+    mov ecx, songLine
+    mov edx, songLineLen
+    call print_string
+
+    mov ecx, sectionLine
+    mov edx, sectionLineLen
+    call print_string
+
+    ;Hobbies
+    mov ecx, hobbyTitle
+    mov edx, hobbyTitleLen
+    call print_string
+
+    mov ecx, hobbyLine
+    mov edx, hobbyLineLen
+    call print_string
+
+    mov ecx, hobbyLine2
+    mov edx, hobbyLine2Len
+    call print_string
+
+    mov ecx, sectionLine
+    mov edx, sectionLineLen
+    call print_string
+
+    ;media
+    mov ecx, favorites
+    mov edx, favoritesLen
+    call print_string
+
+    ;Ambition
+    mov ecx, ambition
+    mov edx, ambitionLen
+    call print_string
+
+    mov ecx, ambitionLine
+    mov edx, ambitionLineLen
+    call print_string
+
+    ;Motto
+    mov ecx, motto
+    mov edx, mottoLen
+    call print_string
+
+    ;bottom border
+    mov ecx, bottomBorder
+    mov edx, bottomBorderLen
+    call print_string
+
+    ; Exit program
+    mov eax, 1              ; sys_exit
+    xor ebx, ebx            ; exit status 0
+    int 0x80
