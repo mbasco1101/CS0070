@@ -1,0 +1,236 @@
+section .data
+    nameprompt db "Enter student name: "
+    namepromptlen equ $ - nameprompt
+
+    idprompt db "Enter student ID: "
+    idpromptlen equ $ - idprompt
+
+    gradeprompt db "Enter grade: "
+    gradepromptlen equ $ - gradeprompt
+
+    namelabel db "Student Name: "
+    namelabellen equ $ - namelabel
+
+    idlabel db "  Student ID: "
+    idlabellen equ $ - idlabel
+
+    gradelabel db "  Grade: "
+    gradelabellen equ $ - gradelabel
+
+    classlabel db "  Classification: "
+    classlabellen equ $ - classlabel
+
+    excellent db "Excellent", 10
+    excellentlen equ $ - excellent
+
+    verygood db "Very Good", 10
+    verygoodlen equ $ - verygood
+
+    passed db "Passed", 10
+    passedlen equ $ - passed
+
+    failed db "Failed", 10
+    failedlen equ $ - failed
+
+    invalid db "INVALID GRADE", 10
+    invalidlen equ $ - invalid
+
+section .bss
+    name resb 100
+    sid resb 50
+    grade resb 20
+
+    namelen resd 1
+    sidlen resd 1
+    gradelen resd 1
+    value resd 1
+    valid resd 1
+
+section .text
+    global _start
+
+_start:
+    mov ecx, nameprompt
+    mov edx, namepromptlen
+    call print
+
+    mov eax, 3
+    mov ebx, 0
+    mov ecx, name
+    mov edx, 100
+    int 0x80
+
+    call trim
+    mov [namelen], eax
+
+    mov ecx, idprompt
+    mov edx, idpromptlen
+    call print
+
+    mov eax, 3
+    mov ebx, 0
+    mov ecx, sid
+    mov edx, 50
+    int 0x80
+
+    call trim
+    mov [sidlen], eax
+
+    mov ecx, gradeprompt
+    mov edx, gradepromptlen
+    call print
+
+    mov eax, 3
+    mov ebx, 0
+    mov ecx, grade
+    mov edx, 20
+    int 0x80
+
+    call trim
+    mov [gradelen], eax
+
+    mov esi, grade
+    mov ecx, [gradelen]
+
+    cmp ecx, 0
+    je badgrade
+
+    xor eax, eax
+    xor ebx, ebx
+
+check:
+    cmp ebx, ecx
+    jge converted
+
+    movzx edx, byte [esi + ebx]
+
+    cmp dl, '0'
+    jb badgrade
+
+    cmp dl, '9'
+    ja badgrade
+
+    sub edx, '0'
+    imul eax, eax, 10
+    add eax, edx
+
+    inc ebx
+    jmp check
+
+converted:
+    cmp eax, 100
+    ja badgrade
+
+    mov [value], eax
+    mov dword [valid], 1
+    jmp display
+
+badgrade:
+    mov dword [valid], 0
+
+display:
+    mov ecx, namelabel
+    mov edx, namelabellen
+    call print
+
+    mov ecx, name
+    mov edx, [namelen]
+    call print
+
+    mov ecx, idlabel
+    mov edx, idlabellen
+    call print
+
+    mov ecx, sid
+    mov edx, [sidlen]
+    call print
+
+    mov ecx, gradelabel
+    mov edx, gradelabellen
+    call print
+
+    mov ecx, grade
+    mov edx, [gradelen]
+    call print
+
+    mov ecx, classlabel
+    mov edx, classlabellen
+    call print
+
+    cmp dword [valid], 1
+    jne showinvalid
+
+    mov eax, [value]
+
+    cmp eax, 90
+    jae showexcellent
+
+    cmp eax, 85
+    jae showverygood
+
+    cmp eax, 75
+    jae showpassed
+
+    jmp showfailed
+
+showexcellent:
+    mov ecx, excellent
+    mov edx, excellentlen
+    call print
+    jmp exit
+
+showverygood:
+    mov ecx, verygood
+    mov edx, verygoodlen
+    call print
+    jmp exit
+
+showpassed:
+    mov ecx, passed
+    mov edx, passedlen
+    call print
+    jmp exit
+
+showfailed:
+    mov ecx, failed
+    mov edx, failedlen
+    call print
+    jmp exit
+
+showinvalid:
+    mov ecx, invalid
+    mov edx, invalidlen
+    call print
+
+exit:
+    mov eax, 1
+    mov ebx, 0
+    int 0x80
+
+trim:
+    mov esi, ecx
+    mov edi, eax
+    xor ebx, ebx
+
+find:
+    cmp ebx, edi
+    jge finish
+
+    cmp byte [esi + ebx], 10
+    je replace
+
+    inc ebx
+    jmp find
+
+replace:
+    mov byte [esi + ebx], 0
+
+finish:
+    mov eax, ebx
+    ret
+
+print:
+    mov eax, 4
+    mov ebx, 1
+    int 0x80
+    ret
