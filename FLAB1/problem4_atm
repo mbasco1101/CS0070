@@ -1,0 +1,302 @@
+section .data
+    prompt1 db "Enter account name: "
+    prompt1len equ $ - prompt1
+
+    prompt2 db "Enter PIN: "
+    prompt2len equ $ - prompt2
+
+    prompt3 db "Enter withdrawal amount: "
+    prompt3len equ $ - prompt3
+
+    granted db "ACCESS GRANTED", 10
+    grantedlen equ $ - granted
+
+    denied db "ACCESS DENIED", 10
+    deniedlen equ $ - denied
+
+    balancelabel db "Current Balance: PHP "
+    balancelabellen equ $ - balancelabel
+
+    success db "WITHDRAWAL SUCCESSFUL", 10
+    successlen equ $ - success
+
+    amountlabel db "Amount Withdrawn: PHP "
+    amountlabellen equ $ - amountlabel
+
+    remainlabel db "Remaining Balance: PHP "
+    remainlabellen equ $ - remainlabel
+
+    invalid db "INVALID AMOUNT", 10
+    invalidlen equ $ - invalid
+
+    funds db "INSUFFICIENT FUNDS", 10
+    fundslen equ $ - funds
+
+    multiple db "AMOUNT MUST BE A MULTIPLE OF 100", 10
+    multiplelen equ $ - multiple
+
+    nl db 10
+
+section .bss
+    name resb 100
+    pin resb 20
+    withdraw resb 20
+    digit resb 1
+
+    namelen resd 1
+    pinlen resd 1
+    withdrawlen resd 1
+    amount resd 1
+    balance resd 1
+
+section .text
+    global _start
+
+_start:
+    mov dword [balance], 10000
+
+    mov ecx, prompt1
+    mov edx, prompt1len
+    call print
+
+    mov eax, 3
+    mov ebx, 0
+    mov ecx, name
+    mov edx, 100
+    int 0x80
+
+    call remove
+    mov [namelen], eax
+
+    mov ecx, prompt2
+    mov edx, prompt2len
+    call print
+
+    mov eax, 3
+    mov ebx, 0
+    mov ecx, pin
+    mov edx, 20
+    int 0x80
+
+    call remove
+    mov [pinlen], eax
+
+    mov ecx, pin
+    mov edx, [pinlen]
+    call convert
+
+    jc deny
+
+    cmp eax, 1234
+    jne deny
+
+    mov ecx, granted
+    mov edx, grantedlen
+    call print
+
+    mov ecx, balancelabel
+    mov edx, balancelabellen
+    call print
+
+    mov eax, [balance]
+    call number
+
+    mov ecx, nl
+    mov edx, 1
+    call print
+
+    mov ecx, prompt3
+    mov edx, prompt3len
+    call print
+
+    mov eax, 3
+    mov ebx, 0
+    mov ecx, withdraw
+    mov edx, 20
+    int 0x80
+
+    call remove
+    mov [withdrawlen], eax
+
+    mov ecx, withdraw
+    mov edx, [withdrawlen]
+    call convert
+
+    jc invalidamount
+
+    cmp eax, 0
+    jle invalidamount
+
+    mov [amount], eax
+
+    cmp eax, [balance]
+    ja insufficient
+
+    xor edx, edx
+    mov ebx, 100
+    div ebx
+
+    cmp edx, 0
+    jne invalidmultiple
+
+    mov eax, [balance]
+    sub eax, [amount]
+    mov [balance], eax
+
+    mov ecx, success
+    mov edx, successlen
+    call print
+
+    mov ecx, amountlabel
+    mov edx, amountlabellen
+    call print
+
+    mov eax, [amount]
+    call number
+
+    mov ecx, nl
+    mov edx, 1
+    call print
+
+    mov ecx, remainlabel
+    mov edx, remainlabellen
+    call print
+
+    mov eax, [balance]
+    call number
+
+    mov ecx, nl
+    mov edx, 1
+    call print
+
+    jmp exit
+
+deny:
+    mov ecx, denied
+    mov edx, deniedlen
+    call print
+    jmp exit
+
+invalidamount:
+    mov ecx, invalid
+    mov edx, invalidlen
+    call print
+    jmp exit
+
+insufficient:
+    mov ecx, funds
+    mov edx, fundslen
+    call print
+    jmp exit
+
+invalidmultiple:
+    mov ecx, multiple
+    mov edx, multiplelen
+    call print
+    jmp exit
+
+exit:
+    mov eax, 1
+    mov ebx, 0
+    int 0x80
+
+remove:
+    mov esi, ecx
+    mov edi, eax
+    xor ebx, ebx
+
+find:
+    cmp ebx, edi
+    jge done
+
+    cmp byte [esi + ebx], 10
+    je replace
+
+    inc ebx
+    jmp find
+
+replace:
+    mov byte [esi + ebx], 0
+
+done:
+    mov eax, ebx
+    ret
+
+convert:
+    xor eax, eax
+    xor ebx, ebx
+
+    cmp edx, 0
+    je failed
+
+read:
+    cmp ebx, edx
+    jge converted
+
+    movzx esi, byte [ecx + ebx]
+
+    cmp esi, '0'
+    jb failed
+
+    cmp esi, '9'
+    ja failed
+
+    sub esi, '0'
+    imul eax, eax, 10
+    add eax, esi
+
+    inc ebx
+    jmp read
+
+converted:
+    clc
+    ret
+
+failed:
+    stc
+    ret
+
+number:
+    cmp eax, 0
+    jne prepare
+
+    mov byte [digit], '0'
+    mov ecx, digit
+    mov edx, 1
+    call print
+    ret
+
+prepare:
+    xor ecx, ecx
+    mov ebx, 10
+
+split:
+    xor edx, edx
+    div ebx
+    push edx
+    inc ecx
+
+    cmp eax, 0
+    jne split
+
+write:
+    pop eax
+    add al, '0'
+    mov [digit], al
+
+    push ecx
+
+    mov ecx, digit
+    mov edx, 1
+    call print
+
+    pop ecx
+    loop write
+
+    ret
+
+print:
+    mov eax, 4
+    mov ebx, 1
+    int 0x80
+    ret
