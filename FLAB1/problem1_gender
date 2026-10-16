@@ -1,0 +1,164 @@
+section .data
+    prompt1 db "Enter your full name: "
+    prompt1len equ $ - prompt1
+
+    prompt2 db "Enter your age: "
+    prompt2len equ $ - prompt2
+
+    prompt3 db "Enter your gender (M/F): "
+    prompt3len equ $ - prompt3
+
+    hello db "Hello "
+    hellolen equ $ - hello
+
+    you db "    You are "
+    youlen equ $ - you
+
+    years db " years old", 10
+    yearslen equ $ - years
+
+    helloout db "Hello", 10
+    hellooutlen equ $ - helloout
+
+    worldout db "World", 10
+    worldoutlen equ $ - worldout
+
+    invalidout db "INVALID", 10
+    invalidoutlen equ $ - invalidout
+
+section .bss
+    name resb 100
+    age resb 20
+    gender resb 4
+
+    namelen resd 1
+    agelen resd 1
+
+section .text
+    global _start
+
+_start:
+    mov ecx, prompt1
+    mov edx, prompt1len
+    call print
+
+    mov eax, 3
+    mov ebx, 0
+    mov ecx, name
+    mov edx, 100
+    int 0x80
+
+    call trim
+    mov [namelen], eax
+
+    mov ecx, prompt2
+    mov edx, prompt2len
+    call print
+
+    mov eax, 3
+    mov ebx, 0
+    mov ecx, age
+    mov edx, 20
+    int 0x80
+
+    call trim
+    mov [agelen], eax
+
+    mov ecx, prompt3
+    mov edx, prompt3len
+    call print
+
+    mov eax, 3
+    mov ebx, 0
+    mov ecx, gender
+    mov edx, 4
+    int 0x80
+
+    mov al, [gender]
+
+    cmp al, 'a'
+    jl check
+    cmp al, 'z'
+    jg check
+
+    sub al, 32
+    mov [gender], al
+
+check:
+    mov ecx, hello
+    mov edx, hellolen
+    call print
+
+    mov ecx, name
+    mov edx, [namelen]
+    call print
+
+    mov ecx, you
+    mov edx, youlen
+    call print
+
+    mov ecx, age
+    mov edx, [agelen]
+    call print
+
+    mov ecx, years
+    mov edx, yearslen
+    call print
+
+    cmp byte [gender], 'M'
+    je male
+
+    cmp byte [gender], 'F'
+    je female
+
+    jmp invalid
+
+male:
+    mov ecx, helloout
+    mov edx, hellooutlen
+    call print
+    jmp exit
+
+female:
+    mov ecx, worldout
+    mov edx, worldoutlen
+    call print
+    jmp exit
+
+invalid:
+    mov ecx, invalidout
+    mov edx, invalidoutlen
+    call print
+
+exit:
+    mov eax, 1
+    mov ebx, 0
+    int 0x80
+
+trim:
+    mov esi, ecx
+    mov edi, eax
+    xor ebx, ebx
+
+find:
+    cmp ebx, edi
+    jge done
+
+    cmp byte [esi + ebx], 10
+    je remove
+
+    inc ebx
+    jmp find
+
+remove:
+    mov byte [esi + ebx], 0
+
+done:
+    mov eax, ebx
+    ret
+
+print:
+    mov eax, 4
+    mov ebx, 1
+    int 0x80
+    ret
