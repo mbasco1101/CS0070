@@ -1,0 +1,177 @@
+section .data
+    prompt1 db "Enter your full name: "
+    prompt1len equ $ - prompt1
+
+    prompt2 db "Enter your age: "
+    prompt2len equ $ - prompt2
+
+    prompt3 db "Enter your year level (1-4): "
+    prompt3len equ $ - prompt3
+
+    hello db "Hello "
+    hellolen equ $ - hello
+
+    you db "You are "
+    youlen equ $ - you
+
+    years db " years old", 10
+    yearslen equ $ - years
+
+    freshman db "Freshman", 10
+    freshmanlen equ $ - freshman
+
+    sophomore db "Sophomore", 10
+    sophomorelen equ $ - sophomore
+
+    junior db "Junior", 10
+    juniorlen equ $ - junior
+
+    senior db "Senior", 10
+    seniorlen equ $ - senior
+
+    invalid db "INVALID YEAR LEVEL", 10
+    invalidlen equ $ - invalid
+
+section .bss
+    name resb 100
+    age resb 20
+    year resb 4
+
+    namelen resd 1
+    agelen resd 1
+
+section .text
+    global _start
+
+_start:
+    mov ecx, prompt1
+    mov edx, prompt1len
+    call print
+
+    mov eax, 3
+    mov ebx, 0
+    mov ecx, name
+    mov edx, 100
+    int 0x80
+
+    call trim
+    mov [namelen], eax
+
+    mov ecx, prompt2
+    mov edx, prompt2len
+    call print
+
+    mov eax, 3
+    mov ebx, 0
+    mov ecx, age
+    mov edx, 20
+    int 0x80
+
+    call trim
+    mov [agelen], eax
+
+    mov ecx, prompt3
+    mov edx, prompt3len
+    call print
+
+    mov eax, 3
+    mov ebx, 0
+    mov ecx, year
+    mov edx, 4
+    int 0x80
+
+    mov ecx, hello
+    mov edx, hellolen
+    call print
+
+    mov ecx, name
+    mov edx, [namelen]
+    call print
+
+    mov ecx, you
+    mov edx, youlen
+    call print
+
+    mov ecx, age
+    mov edx, [agelen]
+    call print
+
+    mov ecx, years
+    mov edx, yearslen
+    call print
+
+    cmp byte [year], '1'
+    je freshmanout
+
+    cmp byte [year], '2'
+    je sophomoreout
+
+    cmp byte [year], '3'
+    je juniorout
+
+    cmp byte [year], '4'
+    je seniorout
+
+    jmp invalidout
+
+freshmanout:
+    mov ecx, freshman
+    mov edx, freshmanlen
+    call print
+    jmp exit
+
+sophomoreout:
+    mov ecx, sophomore
+    mov edx, sophomorelen
+    call print
+    jmp exit
+
+juniorout:
+    mov ecx, junior
+    mov edx, juniorlen
+    call print
+    jmp exit
+
+seniorout:
+    mov ecx, senior
+    mov edx, seniorlen
+    call print
+    jmp exit
+
+invalidout:
+    mov ecx, invalid
+    mov edx, invalidlen
+    call print
+
+exit:
+    mov eax, 1
+    mov ebx, 0
+    int 0x80
+
+trim:
+    mov esi, ecx
+    mov edi, eax
+    xor ebx, ebx
+
+find:
+    cmp ebx, edi
+    jge done
+
+    cmp byte [esi + ebx], 10
+    je remove
+
+    inc ebx
+    jmp find
+
+remove:
+    mov byte [esi + ebx], 0
+
+done:
+    mov eax, ebx
+    ret
+
+print:
+    mov eax, 4
+    mov ebx, 1
+    int 0x80
+    ret
